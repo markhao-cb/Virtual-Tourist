@@ -113,8 +113,8 @@ extension CoreDataStack {
         
         if delayInSeconds > 0 {
             do{
-                try saveContext()
                 print("Autosaving...Checking for changes...")
+                try saveContext()
             }catch{
                 print("Error while autosaving")
             }

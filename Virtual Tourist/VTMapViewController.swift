@@ -16,13 +16,23 @@ class VTMapViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var editBtn: UIBarButtonItem!
     
+    enum Mode {
+        case Normal
+        case Edit
+    }
+    
     let stack = Utilities.appDelegate.stack
+    var mode : Mode = .Normal
+    var edittingLabel : UILabel!
+    
     
     //MARK: -Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupEdittingView()
         
         mapView.delegate = self
+        
         fetchLocations()
         
     }
@@ -37,15 +47,14 @@ class VTMapViewController: UIViewController {
         if gestureRecognizer.state == .Began {
             let touchPoint = gestureRecognizer.locationInView(mapView)
             let coordinates = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = coordinates
-            mapView.addAnnotation(annotation)
-            
-            saveLocation(coordinates)
+            let location = createLocationWith(coordinates)
+            addAnnotitionToMapViewWith(location)
         }
     }
 
     @IBAction func enterEditMode(sender: AnyObject) {
+        mode = mode == .Normal ? .Edit : .Normal
+        setupViews()
     }
 }
 
@@ -56,8 +65,14 @@ extension VTMapViewController : MKMapViewDelegate{
         print(views)
     }
     
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        //TODO: Touch inside
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        if mode == .Normal {
+            let annotation = view.annotation as? VTAnnotation
+            print(annotation?.location!)
+            //TODO: Navigate to show image collections
+        } else {
+            print("TODO: Should delete pin")
+        }
     }
 }
 
@@ -75,11 +90,12 @@ extension VTMapViewController {
         }
     }
     
-    func saveLocation(coordinates: CLLocationCoordinate2D) {
+    func createLocationWith(coordinates: CLLocationCoordinate2D) -> Location {
         let longtitude = Float(coordinates.longitude)
         let latitude = Float(coordinates.latitude)
         let location = Location(longtitude: longtitude, latitude: latitude, context: stack.context)
         print("Location created: \(location)")
+        return location
     }
 }
     //MARK: -UI Related Methods
@@ -87,15 +103,41 @@ extension VTMapViewController {
     
     func setupSavedLocations(locations: [Location]) {
         for location in locations {
-            let coordinates = CLLocationCoordinate2D(latitude: CLLocationDegrees(location.latitude!), longitude: CLLocationDegrees(location.longtitude!))
-            addAnnotitionToMapViewWith(coordinates)
+            addAnnotitionToMapViewWith(location)
         }
     }
     
-    private func addAnnotitionToMapViewWith(coordinates: CLLocationCoordinate2D) {
-        let annotation = MKPointAnnotation()
+    private func addAnnotitionToMapViewWith(location: Location) {
+        let annotation = VTAnnotation(location: location)
+        let coordinates = CLLocationCoordinate2D(latitude: CLLocationDegrees(location.latitude!), longitude: CLLocationDegrees(location.longtitude!))
         annotation.coordinate = coordinates
         mapView.addAnnotation(annotation)
     }
+    
+    private func setupEdittingView() {
+        let frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.width, Constants.UIConstants.EdittingLabelHeight)
+        edittingLabel = UILabel(frame: frame)
+        edittingLabel.backgroundColor = UIColor.redColor()
+        edittingLabel.textColor = UIColor.whiteColor()
+        edittingLabel.font.fontWithSize(16)
+        edittingLabel.text = "Tap Pins to Delete"
+        edittingLabel.textAlignment = .Center
+        self.view.addSubview(edittingLabel)
+    }
+    
+    private func setupViews() {
+        var frame = self.view.frame
+        if mode == .Edit {
+            frame.origin.y -= Constants.UIConstants.EdittingLabelHeight
+            editBtn.title = "Done"
+        } else {
+            frame.origin.y += Constants.UIConstants.EdittingLabelHeight
+            editBtn.title = "Edit"
+        }
+        UIView.animateWithDuration(0.2) {
+            self.view.frame = frame
+        }
+    }
 }
+
 

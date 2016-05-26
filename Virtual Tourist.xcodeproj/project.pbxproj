@@ -21,6 +21,7 @@
 		4D5FDEF91CF75050005C8051 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5FDEF51CF75050005C8051 /* Image.swift */; };
 		4D5FDEFC1CF75158005C8051 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5FDEFB1CF75158005C8051 /* Constants.swift */; };
 		4D5FDEFE1CF755BA005C8051 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5FDEFD1CF755BA005C8051 /* Utilities.swift */; };
+		4D5FDF001CF77DFC005C8051 /* VTAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5FDEFF1CF77DFC005C8051 /* VTAnnotation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		4D5FDEF51CF75050005C8051 /* Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Image.swift; path = ../Image.swift; sourceTree = "<group>"; };
 		4D5FDEFB1CF75158005C8051 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		4D5FDEFD1CF755BA005C8051 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		4D5FDEFF1CF77DFC005C8051 /* VTAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTAnnotation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				4D5FDEFA1CF75062005C8051 /* CoreDataModel */,
 				4D5FDEEB1CF74701005C8051 /* CoreDataStack.swift */,
 				4D5FDEEF1CF74B8A005C8051 /* Model.xcdatamodeld */,
+				4D5FDEFF1CF77DFC005C8051 /* VTAnnotation.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 				4D5FDED81CF74654005C8051 /* VTMapViewController.swift in Sources */,
 				4D5FDEF61CF75050005C8051 /* Location+CoreDataProperties.swift in Sources */,
 				4D5FDEF11CF74B8A005C8051 /* Model.xcdatamodeld in Sources */,
+				4D5FDF001CF77DFC005C8051 /* VTAnnotation.swift in Sources */,
 				4D5FDEFC1CF75158005C8051 /* Constants.swift in Sources */,
 				4D5FDEEE1CF74728005C8051 /* CoreDataTableViewController.swift in Sources */,
 				4D5FDED61CF74654005C8051 /* AppDelegate.swift in Sources */,

@@ -35,7 +35,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="p1l-dl-XNP">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="rwu-Gl-lLO">
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="rwu-Gl-lLO">
                             <connections>
                                 <action selector="enterEditMode:" destination="BYZ-38-t0r" id="ioM-L9-dwc"/>
                             </connections>

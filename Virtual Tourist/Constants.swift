@@ -7,10 +7,16 @@
 //
 
 import Foundation
+import UIKit
 
 struct Constants {
     struct CoreDataEntities {
         static let Location = "Location"
         static let Image = "Image"
+    }
+    
+    struct UIConstants {
+        static let LargeFontSize = 16.0
+        static let EdittingLabelHeight: CGFloat = 100.0
     }
 }
