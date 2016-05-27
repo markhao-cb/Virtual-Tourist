@@ -60,18 +60,18 @@ class VTMapViewController: UIViewController {
 
     //MARK: -Map View Delegate
 extension VTMapViewController : MKMapViewDelegate{
-    func mapView(mapView: MKMapView, didAddAnnotationViews views: [MKAnnotationView]) {
-        //TODO: Add location model to coredata
-        print(views)
-    }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        let annotation = view.annotation as! VTAnnotation
+        let location = annotation.location!
         if mode == .Normal {
-            let annotation = view.annotation as? VTAnnotation
-            print(annotation?.location!)
-            //TODO: Navigate to show image collections
+            let imageCollectionVC = self.storyboard?.instantiateViewControllerWithIdentifier("ImageCollectionViewController") as! ImageCollectionViewController
+            imageCollectionVC.location = location
+            navigationController?.pushViewController(imageCollectionVC, animated: true)
         } else {
-            print("TODO: Should delete pin")
+            mapView.removeAnnotation(annotation)
+            stack.context.deleteObject(location)
+            print("Location deleted: \(location)")
         }
     }
 }

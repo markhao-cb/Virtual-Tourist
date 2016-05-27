@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D1D7F191CF81C24008BAE3C /* ImageCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1D7F181CF81C24008BAE3C /* ImageCollectionViewController.swift */; };
 		4D5FDED61CF74654005C8051 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5FDED51CF74654005C8051 /* AppDelegate.swift */; };
 		4D5FDED81CF74654005C8051 /* VTMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5FDED71CF74654005C8051 /* VTMapViewController.swift */; };
 		4D5FDEDB1CF74654005C8051 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D5FDED91CF74654005C8051 /* Main.storyboard */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D1D7F181CF81C24008BAE3C /* ImageCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewController.swift; sourceTree = "<group>"; };
 		4D5FDED21CF74654005C8051 /* Virtual Tourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virtual Tourist.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D5FDED51CF74654005C8051 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4D5FDED71CF74654005C8051 /* VTMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTMapViewController.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 			children = (
 				4D5FDED71CF74654005C8051 /* VTMapViewController.swift */,
 				4D5FDEED1CF74728005C8051 /* CoreDataTableViewController.swift */,
+				4D1D7F181CF81C24008BAE3C /* ImageCollectionViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -204,6 +207,7 @@
 				4D5FDEF61CF75050005C8051 /* Location+CoreDataProperties.swift in Sources */,
 				4D5FDEF11CF74B8A005C8051 /* Model.xcdatamodeld in Sources */,
 				4D5FDF001CF77DFC005C8051 /* VTAnnotation.swift in Sources */,
+				4D1D7F191CF81C24008BAE3C /* ImageCollectionViewController.swift in Sources */,
 				4D5FDEFC1CF75158005C8051 /* Constants.swift in Sources */,
 				4D5FDEEE1CF74728005C8051 /* CoreDataTableViewController.swift in Sources */,
 				4D5FDED61CF74654005C8051 /* AppDelegate.swift in Sources */,
@@ -358,6 +362,7 @@
 				4D5FDEE61CF74654005C8051 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
