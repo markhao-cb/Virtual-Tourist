@@ -1,0 +1,13 @@
+PODS:
+  - Kingfisher (2.4.1)
+  - NVActivityIndicatorView (2.7)
+
+DEPENDENCIES:
+  - Kingfisher (~> 2.4)
+  - NVActivityIndicatorView
+
+SPEC CHECKSUMS:
+  Kingfisher: 41aed5b6c1ed8fa98cf6d75283ce89cf7890f517
+  NVActivityIndicatorView: dc80f18fb27ac92f0aa87246cc13dc39ed3e9ee0
+
+COCOAPODS: 0.39.0

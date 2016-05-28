@@ -8,6 +8,8 @@
 
 import UIKit
 import MapKit
+import Kingfisher
+import NVActivityIndicatorView
 
 class ImageCollectionViewController: UIViewController {
     
@@ -41,6 +43,7 @@ class ImageCollectionViewController: UIViewController {
 
 }
 
+//MARK: -Collection View Delegate && DataSource Methods
 extension ImageCollectionViewController : UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -55,8 +58,22 @@ extension ImageCollectionViewController : UICollectionViewDelegate, UICollection
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("VTCollectionViewCell", forIndexPath: indexPath) as! VTCollectionViewCell
         
+        //Add ActivityIndicator Cell
+        let activityIndicatorView = NVActivityIndicatorView.init(frame: CGRectMake(cell.frame.width / 4, cell.frame.height / 5, cell.frame.width / 2, cell.frame.height / 2), type: .BallSpinFadeLoader, color: UIColor.whiteColor(), padding: nil)
+        activityIndicatorView.startAnimation()
+        cell.addSubview(activityIndicatorView)
+        
         let image = collectionViewImages![indexPath.row]
-        cell.imageView.image = UIImage(data: NSData(contentsOfURL: NSURL(string: image.imageUrl!)!)!)
+        let imageUrl = NSURL(string: image.imageUrl!)
+        
+        cell.imageView.kf_setImageWithURL(imageUrl!, placeholderImage: nil, optionsInfo: nil, progressBlock: nil, completionHandler: { (image, error, cacheType, imageURL) -> () in
+            
+                performUIUpdatesOnMain({
+                    activityIndicatorView.stopAnimation()
+                    cell.imageView.alpha = 1.0
+                })
+            }
+        )
         
         return cell
     }
@@ -71,7 +88,9 @@ extension ImageCollectionViewController {
                 if success {
                     print("Fetch images from Flickr successfully.")
                     self.location!.totalPagesForImages = pages
-                    self.collectionViewImages = VTImage.imagesForLocationFrom(images!)
+                    let images = VTImage.imagesForLocationFrom(images!)
+                    self.collectionViewImages = images
+                    self.preFetchImages(images)
                     self.collectionView.reloadData()
                 } else {
                     print("Fetch images from Flickr failed. Error: \(errorMessage)")
@@ -112,10 +131,38 @@ extension ImageCollectionViewController {
     }
 }
 
-    //MARK: -Helper methods
+    //MARK: -Selectors
 extension ImageCollectionViewController {
     func OKButtonClicked() {
-        
+        saveLocationImages()
         navigationController?.popViewControllerAnimated(true)
     }
 }
+
+ //MARK: Cache and CoreData Helper method
+extension ImageCollectionViewController {
+    private func preFetchImages(images: [VTImage]) {
+        let urls = images.map { image in
+            NSURL(string: image.imageUrl!)!
+        }
+        let prefetcher = ImagePrefetcher(urls: urls, optionsInfo: nil, progressBlock: nil) { (skippedResources, failedResources, completedResources) in
+            print("Prefetch completed. \(completedResources.count) resources cached.")
+        }
+        prefetcher.start()
+        print("Prefetch starts")
+    }
+    
+    private func saveLocationImages() {
+        //TODO: SAVE Image Set To CoreData.
+    
+    }
+
+}
+
+
+
+
+
+
+
+
