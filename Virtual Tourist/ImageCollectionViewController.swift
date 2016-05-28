@@ -17,7 +17,7 @@ class ImageCollectionViewController: UIViewController {
     //MARK: -Properties
     var location: Location?
     var collectionViewImages : [VTImage]?
-    var newCollectionFetched : Bool = false
+    var CollectionFetchedOrEditted : Bool = false
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
@@ -70,7 +70,7 @@ extension ImageCollectionViewController : UICollectionViewDelegate, UICollection
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("VTCollectionViewCell", forIndexPath: indexPath) as! VTCollectionViewCell
         
         //Add ActivityIndicator Cell
-        let activityIndicatorView = NVActivityIndicatorView.init(frame: CGRectMake(cell.frame.width / 4, cell.frame.height / 5, cell.frame.width / 2, cell.frame.height / 2), type: .BallSpinFadeLoader, color: UIColor.whiteColor(), padding: nil)
+        let activityIndicatorView = NVActivityIndicatorView.init(frame: CGRectMake(cell.frame.width / 4, cell.frame.height / 5, cell.frame.width / 2, cell.frame.height / 2), type: .BallSpinFadeLoader, color: UIColor.grayColor(), padding: nil)
         activityIndicatorView.startAnimation()
         cell.addSubview(activityIndicatorView)
         
@@ -85,7 +85,32 @@ extension ImageCollectionViewController : UICollectionViewDelegate, UICollection
                 })
             }
         )
+        cell.cellMaskView.hidden = !cell.selected
+        
         return cell
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! VTCollectionViewCell
+        cell.cellMaskView.hidden = false
+        newCollectionBtn.title = "Remove Selected Pictures"
+    }
+    
+    func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
+        let cell = collectionView.cellForItemAtIndexPath(indexPath) as! VTCollectionViewCell
+        cell.cellMaskView.hidden = true
+        if let selectedItems = collectionView.indexPathsForSelectedItems() where selectedItems.count > 0 {
+            newCollectionBtn.title = "New Collection"
+        }
+    }
+    
+    //MARK: Helper Methods
+    private func deleteItemsFromDataSourceAtIndexPaths(indexPaths: [NSIndexPath]) {
+        var selectedImages = [VTImage]()
+        for indexPath : NSIndexPath in indexPaths {
+            selectedImages.append(collectionViewImages![indexPath.row])
+        }
+        collectionViewImages = collectionViewImages?.filter { !selectedImages.contains($0) }
     }
 }
 
@@ -94,7 +119,7 @@ extension ImageCollectionViewController : UICollectionViewDelegate, UICollection
 extension ImageCollectionViewController {
     
     func fetchImagesWithLocation(location: Location, page: Int) {
-        newCollectionFetched = true
+        CollectionFetchedOrEditted = true
         setUIEnabled(false)
         showMaskView()
         noImageLabel.hidden = true
@@ -126,9 +151,30 @@ extension ImageCollectionViewController {
 
 //MARK: -Selectors
 extension ImageCollectionViewController {
-    @IBAction func fetchNewCollectionClicked(sender: AnyObject) {
-        fetchImagesWithLocation(location!, page: getRandomPageNumber())
+    @IBAction func fetchNewCollectionOrDeleteSelectedImages(sender: AnyObject) {
+        if newCollectionBtn.title == "New Collection" {
+            fetchImagesWithLocation(location!, page: getRandomPageNumber())
+        } else {
+            CollectionFetchedOrEditted = true
+            collectionView.performBatchUpdates({
+                
+                let selectedIndexPaths = self.collectionView.indexPathsForSelectedItems()!
+                self.deleteItemsFromDataSourceAtIndexPaths(selectedIndexPaths)
+                self.collectionView.deleteItemsAtIndexPaths(selectedIndexPaths)
+                }, completion: { finished in
+                    performUIUpdatesOnMain({ 
+                        if finished {
+                            self.newCollectionBtn.title = "New Collection"
+                            if self.collectionViewImages?.count == 0 {
+                                self.noImageLabel.hidden = false
+                            }
+                        }
+                    })
+                    
+            })
+        }
     }
+    
 }
 
  //MARK: Cache and CoreData Helper method
@@ -146,7 +192,7 @@ extension ImageCollectionViewController {
     
     private func saveLocationImages() {
         
-        if var imagesForLocation = collectionViewImages where newCollectionFetched {
+        if var imagesForLocation = collectionViewImages where CollectionFetchedOrEditted {
             //Remove exsitting data
             for image in (location?.images)! {
                 Utilities.appDelegate.stack.context.deleteObject(image as! Image)
@@ -193,6 +239,8 @@ extension ImageCollectionViewController {
     }
     
     private func setupCollectionView() {
+        
+        collectionView.allowsMultipleSelection = true
         let space :CGFloat = 3.0
         let dimension = (self.view.frame.size.width - (2 * space)) / 3.0
         

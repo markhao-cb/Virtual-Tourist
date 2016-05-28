@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct VTImage {
+struct VTImage : Equatable {
     
     var imageUrl: String?
     
@@ -42,4 +42,8 @@ struct VTImage {
         
         return images
     }
+}
+
+func ==(lhs: VTImage, rhs: VTImage) -> Bool {
+    return lhs.imageUrl == rhs.imageUrl
 }
