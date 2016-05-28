@@ -35,7 +35,12 @@ extension FlickrClient {
                 return
             }
             
-            guard let photos = result[ResponseKey.Photos] as? [String: AnyObject], pages = result[ResponseKey.Pages] as? Int, photo = photos[ResponseKey.Photo] as? [[String: AnyObject]] else  {
+            guard let stat = result[ResponseKey.Status] as? String where stat == ResponseValues.OKStatus else {
+                completionHandlerForGetImages(success: false, pages: nil, images: nil, errorMessage: "Api status is other than OK")
+                return
+            }
+            
+            guard let photos = result[ResponseKey.Photos] as? [String: AnyObject], pages = photos[ResponseKey.Pages] as? Int, photo = photos[ResponseKey.Photo] as? [[String: AnyObject]] else  {
                 completionHandlerForGetImages(success: false, pages: nil, images: nil, errorMessage: "Could not get required data.")
                 return
             }

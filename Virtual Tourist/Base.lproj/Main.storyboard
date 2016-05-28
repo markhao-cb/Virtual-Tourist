@@ -75,6 +75,9 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="180" id="nQY-sK-0yK"/>
                                         </constraints>
+                                        <connections>
+                                            <outlet property="delegate" destination="oRm-KH-JAh" id="gAC-60-tmp"/>
+                                        </connections>
                                     </mapView>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="8a0-RP-Axg">
                                         <rect key="frame" x="0.0" y="180" width="600" height="312"/>
@@ -111,6 +114,10 @@
                                                 </connections>
                                             </collectionViewCell>
                                         </cells>
+                                        <connections>
+                                            <outlet property="dataSource" destination="oRm-KH-JAh" id="ckk-Ng-SHP"/>
+                                            <outlet property="delegate" destination="oRm-KH-JAh" id="OYm-HW-Jjk"/>
+                                        </connections>
                                     </collectionView>
                                 </subviews>
                             </stackView>
@@ -143,6 +150,7 @@
                     <navigationItem key="navigationItem" id="WHe-kF-TbM"/>
                     <connections>
                         <outlet property="collectionView" destination="8a0-RP-Axg" id="BVY-sQ-zun"/>
+                        <outlet property="flowLayout" destination="SGj-We-4ex" id="kY9-hm-9f3"/>
                         <outlet property="mapView" destination="NXc-Qk-jtv" id="mDQ-bh-doV"/>
                     </connections>
                 </viewController>
