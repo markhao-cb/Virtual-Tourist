@@ -78,21 +78,37 @@
                                     </mapView>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="8a0-RP-Axg">
                                         <rect key="frame" x="0.0" y="180" width="600" height="312"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="SGj-We-4ex">
-                                            <size key="itemSize" width="50" height="50"/>
+                                            <size key="itemSize" width="150" height="150"/>
                                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         </collectionViewFlowLayout>
                                         <cells>
-                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="SzK-5Y-f07">
-                                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="VTCollectionViewCell" id="SzK-5Y-f07" customClass="VTCollectionViewCell" customModule="Virtual_Tourist" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
                                                     <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hha-G4-0tq">
+                                                            <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
+                                                        </imageView>
+                                                    </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </view>
+                                                <color key="backgroundColor" red="0.083118267357349396" green="0.58100050687789917" blue="0.78504431247711182" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstItem="hha-G4-0tq" firstAttribute="top" secondItem="SzK-5Y-f07" secondAttribute="topMargin" constant="-8" id="I3G-rr-NUS"/>
+                                                    <constraint firstAttribute="trailingMargin" secondItem="hha-G4-0tq" secondAttribute="trailing" constant="-8" id="L9D-rH-Cdc"/>
+                                                    <constraint firstItem="hha-G4-0tq" firstAttribute="leading" secondItem="SzK-5Y-f07" secondAttribute="leadingMargin" constant="-8" id="dKD-16-JvJ"/>
+                                                    <constraint firstAttribute="bottomMargin" secondItem="hha-G4-0tq" secondAttribute="bottom" constant="-8" id="y51-Kf-dhm"/>
+                                                </constraints>
+                                                <connections>
+                                                    <outlet property="imageView" destination="hha-G4-0tq" id="96A-Zh-6zr"/>
+                                                </connections>
                                             </collectionViewCell>
                                         </cells>
                                     </collectionView>
@@ -125,6 +141,10 @@
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" id="WHe-kF-TbM"/>
+                    <connections>
+                        <outlet property="collectionView" destination="8a0-RP-Axg" id="BVY-sQ-zun"/>
+                        <outlet property="mapView" destination="NXc-Qk-jtv" id="mDQ-bh-doV"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QBP-me-Jk6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
