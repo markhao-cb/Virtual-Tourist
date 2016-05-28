@@ -11,13 +11,14 @@ import Foundation
 struct VTImage : Equatable {
     
     var imageUrl: String?
+    var imageData: NSData?
     
     init(dictionary: [String: AnyObject]) {
         imageUrl = dictionary[FlickrClient.ResponseKey.SquareURL] as? String
     }
     
-    init(url: String) {
-        imageUrl = url
+    init(data: NSData) {
+        imageData = data
     }
     
     static func imagesForLocationFrom(results: [[String: AnyObject]] ) -> [VTImage] {
@@ -37,7 +38,7 @@ struct VTImage : Equatable {
         
         for image in set {
             let image = image as! Image
-            images.append(VTImage(url: image.imageURL!))
+            images.append(VTImage(data: image.image!))
         }
         
         return images

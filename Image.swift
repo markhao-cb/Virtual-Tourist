@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import UIKit
 
 
 class Image: NSManagedObject {
@@ -15,7 +16,8 @@ class Image: NSManagedObject {
     convenience init(url: String, location: Location, context: NSManagedObjectContext) {
         if let entity = NSEntityDescription.entityForName(Constants.CoreDataEntities.Image, inManagedObjectContext: context) {
             self.init(entity: entity, insertIntoManagedObjectContext: context)
-            self.imageURL = url
+            self.imageUrl = url
+            self.image = NSData(contentsOfURL: NSURL(string: url)!)
             self.location = location
             self.creationDate = NSDate()
             

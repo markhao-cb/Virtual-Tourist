@@ -95,7 +95,12 @@ extension VTMapViewController {
         let longtitude = Float(coordinates.longitude)
         let latitude = Float(coordinates.latitude)
         let location = Location(longtitude: longtitude, latitude: latitude, context: stack.context)
-        print("Location created: \(location)")
+        do {
+            try stack.context.save()
+            print("Location created: \(location)")
+        } catch {
+            print("Error while saving.")
+        }
         return location
     }
 }

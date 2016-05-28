@@ -69,22 +69,28 @@ extension ImageCollectionViewController : UICollectionViewDelegate, UICollection
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("VTCollectionViewCell", forIndexPath: indexPath) as! VTCollectionViewCell
         
-        //Add ActivityIndicator Cell
-        let activityIndicatorView = NVActivityIndicatorView.init(frame: CGRectMake(cell.frame.width / 4, cell.frame.height / 5, cell.frame.width / 2, cell.frame.height / 2), type: .BallSpinFadeLoader, color: UIColor.grayColor(), padding: nil)
-        activityIndicatorView.startAnimation()
-        cell.addSubview(activityIndicatorView)
-        
         let image = collectionViewImages![indexPath.row]
-        let imageUrl = NSURL(string: image.imageUrl!)
         
-        cell.imageView.kf_setImageWithURL(imageUrl!, placeholderImage: nil, optionsInfo: nil, progressBlock: nil, completionHandler: { (image, error, cacheType, imageURL) -> () in
+        if let data = image.imageData {
+            cell.imageView.image = UIImage(data: data)
+            cell.imageView.alpha = 1.0
             
+        } else {
+            
+            let imageUrl = NSURL(string: image.imageUrl!)
+            //Add ActivityIndicator Cell
+            let activityIndicatorView = NVActivityIndicatorView.init(frame: CGRectMake(cell.frame.width / 4, cell.frame.height / 5, cell.frame.width / 2, cell.frame.height / 2), type: .BallSpinFadeLoader, color: UIColor.grayColor(), padding: nil)
+            activityIndicatorView.startAnimation()
+            cell.addSubview(activityIndicatorView)
+            cell.imageView.kf_setImageWithURL(imageUrl!, placeholderImage: nil, optionsInfo: nil, progressBlock: nil, completionHandler: { (image, error, cacheType, imageURL) -> () in
+                
                 performUIUpdatesOnMain({
                     activityIndicatorView.stopAnimation()
                     cell.imageView.alpha = 1.0
                 })
-            }
-        )
+                }
+            )
+        }
         cell.cellMaskView.hidden = !cell.selected
         
         return cell
@@ -191,18 +197,19 @@ extension ImageCollectionViewController {
     }
     
     private func saveLocationImages() {
-        
         if var imagesForLocation = collectionViewImages where CollectionFetchedOrEditted {
-            //Remove exsitting data
-            for image in (location?.images)! {
-                Utilities.appDelegate.stack.context.deleteObject(image as! Image)
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                //Remove exsitting data
+                for image in (self.location?.images)! {
+                    Utilities.appDelegate.stack.context.deleteObject(image as! Image)
+                }
+                
+                for image in imagesForLocation {
+                    _ = Image(url: image.imageUrl!, location: self.location!, context: Utilities.appDelegate.stack.context)
+                }
+                print("\(imagesForLocation.count) images created.")
+                imagesForLocation.removeAll()
             }
-            
-            for image in imagesForLocation {
-                _ = Image(url: image.imageUrl!, location: location!, context: Utilities.appDelegate.stack.context)
-            }
-            print("\(imagesForLocation.count) images created.")
-            imagesForLocation.removeAll()
         }
     }
     
