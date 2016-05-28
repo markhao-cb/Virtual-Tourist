@@ -17,10 +17,14 @@ class ImageCollectionViewController: UIViewController {
     //MARK: -Properties
     var location: Location?
     var collectionViewImages : [VTImage]?
+    var newCollectionFetched : Bool = false
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
+    @IBOutlet weak var newCollectionBtn: UIBarButtonItem!
+    @IBOutlet weak var noImageLabel: UILabel!
+    @IBOutlet weak var maskView: UIView!
     
     //MARK: -Life Circle
     override func viewDidLoad() {
@@ -28,6 +32,8 @@ class ImageCollectionViewController: UIViewController {
         
         changeBackBarButtonItemTitleTo("OK")
         setupCollectionView()
+        maskView.alpha = 0
+        noImageLabel.hidden = true
         
         if let location = location {
             
@@ -36,9 +42,14 @@ class ImageCollectionViewController: UIViewController {
             if let images = location.images where images.count > 0 {
                 collectionViewImages = VTImage.imageForLocationFrom(images)
             } else {
-                fetchImagesWithLocation(location)
+                fetchImagesWithLocation(location, page: getRandomPageNumber())
             }
         }
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        saveLocationImages()
     }
 
 }
@@ -74,25 +85,37 @@ extension ImageCollectionViewController : UICollectionViewDelegate, UICollection
                 })
             }
         )
-        
         return cell
     }
 }
 
-    //MARK: -Networking Methods
+
+//MARK: -Networking Methods
 extension ImageCollectionViewController {
     
-    func fetchImagesWithLocation(location: Location) {
-        FlickrClient.sharedInstance.getImagesFromLocation(location) { (success, pages, images, errorMessage) in
+    func fetchImagesWithLocation(location: Location, page: Int) {
+        newCollectionFetched = true
+        setUIEnabled(false)
+        showMaskView()
+        noImageLabel.hidden = true
+        FlickrClient.sharedInstance.getImagesFromLocation(location, page: page) { (success, pages, images, errorMessage) in
             performUIUpdatesOnMain({ 
                 if success {
+                    self.setUIEnabled(true)
                     print("Fetch images from Flickr successfully.")
                     self.location!.totalPagesForImages = pages
-                    let images = VTImage.imagesForLocationFrom(images!)
-                    self.collectionViewImages = images
-                    self.preFetchImages(images)
-                    self.collectionView.reloadData()
+                    if images?.count > 0 {
+                        let images = VTImage.imagesForLocationFrom(images!)
+                        self.collectionViewImages = images
+                        self.preFetchImages(images)
+                        
+                        self.collectionView.reloadData()
+                        self.hideMaskView()
+                    } else {
+                        self.noImageLabel.hidden = false
+                    }
                 } else {
+                    self.setUIEnabled(true)
                     print("Fetch images from Flickr failed. Error: \(errorMessage)")
                 }
             })
@@ -101,41 +124,10 @@ extension ImageCollectionViewController {
     }
 }
 
-
-
-    //MARK: -UI related methods
+//MARK: -Selectors
 extension ImageCollectionViewController {
-    
-    private func changeBackBarButtonItemTitleTo(title: String) {
-        let backButton = UIBarButtonItem(title: title, style: .Plain, target: self, action: #selector(OKButtonClicked))
-        navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
-    }
-    
-    private func setupMapView(location: Location) {
-        let coordinate = CLLocationCoordinate2DMake(Double(location.latitude!), Double(location.longtitude!))
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        mapView.addAnnotation(annotation)
-        let span = MKCoordinateSpanMake(0.1, 0.1)
-        let region = MKCoordinateRegion(center: coordinate, span: span)
-        mapView.setRegion(region, animated: true)
-    }
-    
-    private func setupCollectionView() {
-        let space :CGFloat = 3.0
-        let dimension = (self.view.frame.size.width - (2 * space)) / 3.0
-        
-        flowLayout.minimumInteritemSpacing = space
-        flowLayout.minimumLineSpacing = space
-        flowLayout.itemSize = CGSizeMake(dimension, dimension)
-    }
-}
-
-    //MARK: -Selectors
-extension ImageCollectionViewController {
-    func OKButtonClicked() {
-        saveLocationImages()
-        navigationController?.popViewControllerAnimated(true)
+    @IBAction func fetchNewCollectionClicked(sender: AnyObject) {
+        fetchImagesWithLocation(location!, page: getRandomPageNumber())
     }
 }
 
@@ -153,14 +145,84 @@ extension ImageCollectionViewController {
     }
     
     private func saveLocationImages() {
-        //TODO: SAVE Image Set To CoreData.
+        
+        if var imagesForLocation = collectionViewImages where newCollectionFetched {
+            //Remove exsitting data
+            for image in (location?.images)! {
+                Utilities.appDelegate.stack.context.deleteObject(image as! Image)
+            }
+            
+            for image in imagesForLocation {
+                _ = Image(url: image.imageUrl!, location: location!, context: Utilities.appDelegate.stack.context)
+            }
+            print("\(imagesForLocation.count) images created.")
+            imagesForLocation.removeAll()
+        }
+    }
     
+    private func getRandomPageNumber() -> Int {
+        if let totalPages = location?.totalPagesForImages {
+            let pageLimit = min(totalPages.intValue, 40)
+            let randomPage = Int(arc4random_uniform(UInt32(pageLimit))) + 1
+            return randomPage
+        } else {
+            return 1
+        }
     }
 
 }
 
-
-
+//MARK: -UI related methods
+extension ImageCollectionViewController {
+    
+    private func changeBackBarButtonItemTitleTo(title: String) {
+        let backButton = UIBarButtonItem()
+        backButton.title = title
+        navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+    }
+    
+    private func setupMapView(location: Location) {
+        mapView.userInteractionEnabled = false
+        let coordinate = CLLocationCoordinate2DMake(Double(location.latitude!), Double(location.longtitude!))
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        mapView.addAnnotation(annotation)
+        let span = MKCoordinateSpanMake(1.0, 1.0)
+        let region = MKCoordinateRegion(center: coordinate, span: span)
+        mapView.setRegion(region, animated: true)
+    }
+    
+    private func setupCollectionView() {
+        let space :CGFloat = 3.0
+        let dimension = (self.view.frame.size.width - (2 * space)) / 3.0
+        
+        flowLayout.minimumInteritemSpacing = space
+        flowLayout.minimumLineSpacing = space
+        flowLayout.itemSize = CGSizeMake(dimension, dimension)
+    }
+    
+    private func setUIEnabled(enabled: Bool) {
+        collectionView.userInteractionEnabled = enabled
+        newCollectionBtn.enabled = enabled
+    }
+    
+    private func showMaskView() {
+        view.bringSubviewToFront(self.maskView)
+        UIView.animateWithDuration(0.5, animations: {
+            self.maskView.alpha = 1.0
+        })
+    }
+    
+    private func hideMaskView() {
+        UIView.animateWithDuration(0.5, animations: {
+            self.maskView.alpha = 0.0
+            }) { (finished) in
+                if finished {
+                    self.view.sendSubviewToBack(self.maskView)
+                }
+        }
+    }
+}
 
 
 

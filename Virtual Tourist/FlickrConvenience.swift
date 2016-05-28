@@ -11,10 +11,8 @@ import Foundation
 
 extension FlickrClient {
     
-    func getImagesFromLocation(location: Location, completionHandlerForGetImages: (success: Bool, pages: Int?,images: [[String : AnyObject]]?, errorMessage: String?) -> Void) {
-        
-        let longtitude = String(location.longtitude!)
-        let latitude = String(location.latitude!)
+    func getImagesFromLocation(location: Location, page: Int, completionHandlerForGetImages: (success: Bool, pages: Int?,images: [[String : AnyObject]]?, errorMessage: String?) -> Void) {
+        let page = String(page)
         
         let parameters = [
             ParametersKey.APIKey : ParametersValue.ApiKey,
@@ -22,9 +20,9 @@ extension FlickrClient {
             ParametersKey.Format : ParametersValue.ResponseFormat,
             ParametersKey.NoJSONCallback : ParametersValue.DisableJSONCallback,
             ParametersKey.Extras : ParametersValue.SquareURL,
-            ParametersKey.Longtitude : longtitude,
-            ParametersKey.Latitude : latitude,
-            ParametersKey.PerPage : ParametersValue.ImagePerPage
+            ParametersKey.BBox : bboxString(location),
+            ParametersKey.PerPage : ParametersValue.ImagePerPage,
+            ParametersKey.Page : page
         ]
         
         let method = ""
@@ -48,6 +46,18 @@ extension FlickrClient {
             completionHandlerForGetImages(success: true, pages: pages, images: photo, errorMessage: nil)
             
         }
+    }
+    
+    
+    private func bboxString(location: Location) -> String {
+        // ensure bbox is bounded by minimum and maximums
+        let latitude = Double(location.latitude!)
+        let longitude = Double(location.longtitude!)
+        let minimumLon = max(longitude - Flickr.SearchBBoxHalfWidth, Flickr.SearchLonRange.0)
+        let minimumLat = max(latitude - Flickr.SearchBBoxHalfHeight, Flickr.SearchLatRange.0)
+        let maximumLon = min(longitude + Flickr.SearchBBoxHalfWidth, Flickr.SearchLonRange.1)
+        let maximumLat = min(latitude + Flickr.SearchBBoxHalfHeight, Flickr.SearchLatRange.1)
+        return "\(minimumLon),\(minimumLat),\(maximumLon),\(maximumLat)"
     }
     
 }

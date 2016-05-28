@@ -68,6 +68,7 @@ extension VTMapViewController : MKMapViewDelegate{
             let imageCollectionVC = self.storyboard?.instantiateViewControllerWithIdentifier("ImageCollectionViewController") as! ImageCollectionViewController
             imageCollectionVC.location = location
             navigationController?.pushViewController(imageCollectionVC, animated: true)
+            mapView.deselectAnnotation(annotation, animated: false)
         } else {
             mapView.removeAnnotation(annotation)
             stack.context.deleteObject(location)

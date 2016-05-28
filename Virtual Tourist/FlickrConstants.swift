@@ -24,9 +24,9 @@ extension FlickrClient {
         static let Extras = "extras"
         static let Format = "format"
         static let NoJSONCallback = "nojsoncallback"
-        static let Longtitude = "lon"
-        static let Latitude = "lat"
+        static let BBox = "bbox"
         static let PerPage = "per_page"
+        static let Page = "page"
     }
     
     // MARK: Flickr Parameter Values
@@ -53,4 +53,12 @@ extension FlickrClient {
     struct ResponseValues {
         static let OKStatus = "ok"
     }
+    
+    struct Flickr {
+        static let SearchBBoxHalfWidth = 1.0
+        static let SearchBBoxHalfHeight = 1.0
+        static let SearchLatRange = (-90.0, 90.0)
+        static let SearchLonRange = (-180.0, 180.0)
+    }
+    
 }

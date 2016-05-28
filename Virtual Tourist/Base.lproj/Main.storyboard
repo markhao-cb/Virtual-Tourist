@@ -125,10 +125,30 @@
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="t5R-ud-D5L"/>
-                                    <barButtonItem title="New Collection" id="ric-Ll-RSk"/>
+                                    <barButtonItem title="New Collection" id="ric-Ll-RSk">
+                                        <connections>
+                                            <action selector="fetchNewCollectionClicked:" destination="oRm-KH-JAh" id="KCe-dx-nuk"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="DI7-dh-n4P"/>
                                 </items>
                             </toolbar>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fq2-9a-fXs">
+                                <rect key="frame" x="0.0" y="242" width="600" height="314"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Images" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gjC-4O-sYb">
+                                        <rect key="frame" x="250" y="144" width="101" height="26"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="gjC-4O-sYb" firstAttribute="centerX" secondItem="fq2-9a-fXs" secondAttribute="centerX" id="RB9-GV-Uwz"/>
+                                    <constraint firstItem="gjC-4O-sYb" firstAttribute="centerY" secondItem="fq2-9a-fXs" secondAttribute="centerY" id="TRY-z6-zWp"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -138,8 +158,12 @@
                             <constraint firstAttribute="trailingMargin" secondItem="z9J-8C-nnk" secondAttribute="trailing" constant="-20" id="MTB-w6-iBr"/>
                             <constraint firstItem="WdS-TZ-UMe" firstAttribute="top" secondItem="BfN-Nn-HK5" secondAttribute="bottom" id="Mdq-0k-8wT"/>
                             <constraint firstItem="Evg-Bc-pds" firstAttribute="top" secondItem="z9J-8C-nnk" secondAttribute="bottom" id="QgO-ii-vqI"/>
+                            <constraint firstItem="fq2-9a-fXs" firstAttribute="leading" secondItem="jic-4p-zjM" secondAttribute="leadingMargin" constant="-20" id="gjX-13-iMH"/>
                             <constraint firstAttribute="trailingMargin" secondItem="WdS-TZ-UMe" secondAttribute="trailing" constant="-20" id="imT-qm-Qmd"/>
                             <constraint firstItem="z9J-8C-nnk" firstAttribute="top" secondItem="WdS-TZ-UMe" secondAttribute="bottom" id="u0a-PH-6CL"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="fq2-9a-fXs" secondAttribute="trailing" constant="-20" id="udg-3F-5do"/>
+                            <constraint firstItem="fq2-9a-fXs" firstAttribute="top" secondItem="BfN-Nn-HK5" secondAttribute="bottom" constant="178" id="ycV-1A-f3H"/>
+                            <constraint firstItem="Evg-Bc-pds" firstAttribute="top" secondItem="fq2-9a-fXs" secondAttribute="bottom" constant="44" id="zRn-fT-779"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -152,6 +176,9 @@
                         <outlet property="collectionView" destination="8a0-RP-Axg" id="BVY-sQ-zun"/>
                         <outlet property="flowLayout" destination="SGj-We-4ex" id="kY9-hm-9f3"/>
                         <outlet property="mapView" destination="NXc-Qk-jtv" id="mDQ-bh-doV"/>
+                        <outlet property="maskView" destination="fq2-9a-fXs" id="C7S-A8-h57"/>
+                        <outlet property="newCollectionBtn" destination="ric-Ll-RSk" id="QFb-gO-cLp"/>
+                        <outlet property="noImageLabel" destination="gjC-4O-sYb" id="zQj-uw-qTz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QBP-me-Jk6" userLabel="First Responder" sceneMemberID="firstResponder"/>

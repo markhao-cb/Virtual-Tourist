@@ -20,7 +20,7 @@ struct VTImage {
         imageUrl = url
     }
     
-    static func imagesForLocationFrom(results: [[String: AnyObject]]) -> [VTImage] {
+    static func imagesForLocationFrom(results: [[String: AnyObject]] ) -> [VTImage] {
         
         var images = [VTImage]()
         
